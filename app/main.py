@@ -1,41 +1,33 @@
 from app.jobs.models import StorageLocation, TranscodeJob
 from app.queue.local import LocalQueue
 from app.storage.local import LocalStorage
-from app.transcoding.transcoder import transcode
+from app.worker import Worker
 
 
 def main():
-    job = TranscodeJob(
-        id="test-001",
-        input=StorageLocation(path="input/test.mp4"),
-        output=StorageLocation(
-            path="output/test-001",
+    job = [
+        TranscodeJob(
+            id="test-001",
+            input=StorageLocation(path="/data/input/test.mp4"),
+            output=StorageLocation(
+                path="/data/output/test-001",
+            ),
         ),
-    )
-
-    queue = LocalQueue([job])
+        TranscodeJob(
+            id="test-002",
+            input=StorageLocation(path="/data/input/test.mp4"),
+            output=StorageLocation(
+                path="/data/output/test-002",
+            ),
+        ),
+    ]
+    queue = LocalQueue(job)
 
     storage = LocalStorage()
 
-    while True:
-        job = queue.receive()
+    worker = Worker(queue=queue, storage=storage)
 
-        if job is None:
-            print("[WORKER] No more jobs.")
-            break
-
-        print(f"[WOKER] Processing job: {job.id}")
-
-        try:
-            input_file = storage.download(job.input)
-
-            transcode(input_file=str(input_file), output_dir=job.output.path)
-
-            queue.complete(job)
-
-        except Exception as error:
-            queue.fail(job, error)
-            raise
+    worker.run()
 
 
 if __name__ == "__main__":
