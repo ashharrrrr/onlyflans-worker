@@ -13,3 +13,11 @@ class Storage(ABC):
     @abstractmethod
     def upload(self, local_path: Path, location: StorageLocation) -> None:
         pass
+
+    @abstractmethod
+    def upload_directory(
+        self,
+        local_dir: Path,
+        location: StorageLocation,
+    ) -> None:
+        pass

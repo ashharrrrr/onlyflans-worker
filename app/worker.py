@@ -1,3 +1,6 @@
+from pathlib import Path
+import tempfile
+
 from app.storage.base import Storage
 from app.queue.base import JobQueue
 from app.jobs.models import TranscodeJob
@@ -12,9 +15,16 @@ class Worker:
     def process(self, job: TranscodeJob) -> None:
         print(f"[WORKER] Processing job: {job.id}")
 
-        input_file = self.storage.download(job.input)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir) / job.id
+            input_dir = workspace / "input"
+            output_dir = workspace / "output"
 
-        transcode(input_file=str(input_file), output_dir=job.output.path)
+            input_file = self.storage.download(job.input, input_dir)
+
+            transcode(input_file=str(input_file), output_dir=str(output_dir))
+
+            self.storage.upload_directory(local_dir=output_dir, location=job.output)
 
     def run(self) -> None:
         while True:

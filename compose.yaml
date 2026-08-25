@@ -1,6 +1,9 @@
 services:
   worker:
     build: .
+    env_file:
+      - .env
     volumes:
       - ./input:/data/input
       - ./output:/data/output
+      - ~/.aws:/root/.aws

@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class StorageLocation(BaseModel):
-    path: str
+    uri: str
 
 
 class TranscodeJob(BaseModel):
