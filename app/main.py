@@ -9,12 +9,12 @@ def main():
     print("s3 bucket:", settings.s3_bucket)
     job = [
         TranscodeJob(
-            id="test-s3-001",
+            id="test-s3-002",
             input=StorageLocation(
-                uri="s3://onlyflans-media-videos/uploads/test-s3-001/test.mp4"
+                uri="s3://onlyflans-media-videos/users/9/videos/10/orignal/source.mp4"
             ),
             output=StorageLocation(
-                uri="s3://onlyflans-media-videos/videos/test-s3-001/",
+                uri="s3://onlyflans-media-videos/users/9/videos/10/hls/",
             ),
         ),
     ]

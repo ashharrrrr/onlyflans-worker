@@ -7,7 +7,7 @@ from app.jobs.models import StorageLocation
 
 class Storage(ABC):
     @abstractmethod
-    def download(self, location: StorageLocation) -> Path:
+    def download(self, location: StorageLocation, destination: Path) -> Path:
         pass
 
     @abstractmethod
